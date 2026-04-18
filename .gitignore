@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data files (too large for git)
+*.nc
+*.grib
+*.grib2
+*.hdf
+*.hdf5
+*.h5
+*.mat
+
+# Large intermediate files
+footprints_weekly/
+icos_data/
+flux_data/
+*.zip
+*.tar.gz
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# API credentials
+.cdsapirc
+.env
+
+# Logs
+*.log

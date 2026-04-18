@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "PINN Inversion CO2: Europe 2019"
+abstract: "Physics-Informed Neural Network framework for atmospheric CO2 flux inversion, combined with HYSPLIT Lagrangian transport and ICOS observations. Decoupled formulation separates fossil and biospheric fluxes using mono-tracer configuration."
+authors:
+  - family-names: Mahamat
+    given-names: Ali Ousmane
+    affiliation: "GSMA, CNRS / Universite de Reims Champagne-Ardenne"
+version: "1.0.0"
+date-released: 2026-04-17
+license: MIT
+repository-code: "https://github.com/YOUR_USERNAME/pinn-inversion-co2"
+doi: "10.5281/zenodo.XXXXXXX"
+keywords:
+  - atmospheric-inversion
+  - physics-informed-neural-network
+  - co2-flux
+  - hysplit
+  - icos
+  - carbon-cycle
+  - europe

@@ -1,0 +1,17 @@
+# Core scientific stack
+numpy>=1.24
+scipy>=1.11
+pandas>=2.0
+matplotlib>=3.7
+scikit-learn>=1.3
+
+# Deep learning
+tensorflow>=2.15
+
+# NetCDF / climate data
+netCDF4>=1.6
+xarray>=2023.1
+cdsapi>=0.7
+
+# HYSPLIT is NOT a Python package — install separately from:
+# https://www.ready.noaa.gov/HYSPLIT.php
