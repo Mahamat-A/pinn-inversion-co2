@@ -5,7 +5,7 @@ abstract: "Physics-Informed Neural Network framework for atmospheric CO2 flux in
 authors:
   - family-names: Mahamat
     given-names: Ali Ousmane
-    affiliation: "GSMA, CNRS / Universite de Reims Champagne-Ardenne"
+    affiliation: "Independent researcher (formerly GSMA, CNRS / URCA)"
 version: "1.0.0"
 date-released: 2026-04-17
 license: MIT

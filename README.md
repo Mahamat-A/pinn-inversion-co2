@@ -136,7 +136,7 @@ Voir `docs/LIMITATIONS.md` pour le détail. En résumé :
 
 ## Auteur
 
-**Ali Ousmane Mahamat** (Moud) — GSMA, CNRS / Université de Reims Champagne-Ardenne
+**Ali Ousmane Mahamat** (Moud) — Indépendant (ex-GSMA, CNRS / URCA)
 
 ## Licence
 
