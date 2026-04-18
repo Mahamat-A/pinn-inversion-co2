@@ -10,7 +10,7 @@ version: "1.0.0"
 date-released: 2026-04-17
 license: MIT
 repository-code: "https://github.com/YOUR_USERNAME/pinn-inversion-co2"
-doi: "10.5281/zenodo.XXXXXXX"
+doi: "10.5281/zenodo.19638205"
 keywords:
   - atmospheric-inversion
   - physics-informed-neural-network

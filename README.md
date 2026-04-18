@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19638205.svg)](https://doi.org/10.5281/zenodo.19638205)
 
 Système d'inversion atmosphérique du CO₂ combinant un **réseau de neurones informé par la physique** (PINN) avec le modèle de transport lagrangien **HYSPLIT**, appliqué au réseau ICOS européen pour l'année 2019.
 
@@ -119,7 +119,7 @@ Si tu utilises ce code :
   title        = {{PINN Inversion CO₂: Europe 2019}},
   year         = 2026,
   publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.XXXXXXX},
+  doi          = {10.5281/zenodo.19638205},
   url          = {https://github.com/YOUR_USERNAME/pinn-inversion-co2}
 }
 ```
