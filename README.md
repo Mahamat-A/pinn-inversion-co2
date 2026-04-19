@@ -1,143 +1,163 @@
-# PINN Inversion CO₂ — Séparation des flux fossiles et biosphériques en Europe
+# PINN Inversion CO₂ — Europe 2019
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19638205.svg)](https://doi.org/10.5281/zenodo.19638205)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19638205.svg)](https://doi.org/10.5281/zenodo.19638205)
 
-Système d'inversion atmosphérique du CO₂ combinant un **réseau de neurones informé par la physique** (PINN) avec le modèle de transport lagrangien **HYSPLIT**, appliqué au réseau ICOS européen pour l'année 2019.
+A hybrid Physics-Informed Neural Network (PINN) framework coupled with HYSPLIT Lagrangian transport for atmospheric CO₂ flux inversion over Europe using the ICOS observation network.
 
-![Overview](figures/fig_v12_filtrage.png)
+---
 
-## Résumé en 3 chiffres
+## 🎯 Highlights
 
-- **LOSO α r = 0.612 ± 0.015** — le modèle prédit les flux fossiles de stations qu'il n'a jamais vues
-- **PINN ×12 vs bayésien** — 0.417 vs 0.033 sur mêmes données, même prior, même transport
-- **r = 0.992 vs CAMS** — concordance spatiale avec le système opérationnel indépendant du Copernicus
+- **Decoupled formulation** `C = H(α·F_fossil + β·F_bio)` separates fossil and biospheric CO₂ fluxes by exploiting distinct spatial structures of priors (structural separation, not formal physical separation)
+- **LOSO correlation r = 0.612 ± 0.015** on 19 rural ICOS stations
+- **12× improvement** over classical Bayesian inversion on identical data (LOSO 0.612 vs 0.033)
+- **r = 0.992 spatial correlation** with the independent CAMS operational system (validation)
+- **MC Dropout uncertainty**: α = 1.010 ± 0.078, β = 0.971 ± 0.023 (lower bounds)
+- **Temporal generalization tested**: JJA withholding shows Δr = -0.002
 
-## Contexte scientifique
+---
 
-Le problème : séparer les flux de CO₂ fossiles (EDGAR) et biosphériques (VPRM) à partir des concentrations atmosphériques ICOS. En configuration mono-traceur, ce problème est considéré sous-déterminé dans la littérature (Basu et al., 2016). Notre contribution : une formulation découplée `C_mod = H(α·F_foss + β·F_bio)` qui exploite les structures spatiales différentes des sources et la séparation temporelle jour/nuit.
+## 📚 Documentation
 
-## Architecture
+### Full reports (in `docs/`)
 
-```
-Observations ICOS (25 stations)
-    │
-    ▼
-Empreintes HYSPLIT hebdo (2600 fichiers)
-    │
-    ▼
-PINN découplé (Conv2DTranspose decoder)
-    │
-    ├─→ α(région, mois) — correction fossile
-    └─→ β global — correction biosphère
-    │
-    ▼
-Validation : CAMS, CarbonTracker, LOSO
-```
+| Document | Pages | Language | Description |
+|----------|-------|----------|-------------|
+| [`long_report.pdf`](docs/long_report.pdf) | 45 | English | Complete technical report |
+| [`long_report_fr.pdf`](docs/long_report_fr.pdf) | 48 | Français | Rapport technique complet |
+| [`short_paper.pdf`](docs/short_paper.pdf) | 13 | English | AMT/ACP-style paper |
+| [`short_paper_fr.pdf`](docs/short_paper_fr.pdf) | 13 | Français | Article style AMT/ACP |
 
-## Résultats principaux
+Sources (Markdown) are also available in `docs/` for editing/recompilation.
 
-### Progression V1 → V12
+### Technical documentation (in `docs/`)
 
-| Version | α r | LOSO | Innovation |
-|---------|-----|------|-----------|
-| V1 | 0.253 | — | Baseline synthétique |
-| V6 | 0.523 | 0.417 | Découplage α/β |
-| V9 | 0.609 | — | Séparation jour/nuit |
-| V11 | 0.648 | 0.487 | Footprints hebdomadaires |
-| **V12b** | **0.648** | **0.612** | **Filtrage spatial (19 stations)** |
+- [`DATA.md`](docs/DATA.md) — Data sources and preprocessing
+- [`METHODOLOGY.md`](docs/METHODOLOGY.md) — Mathematical formulation
+- [`LIMITATIONS.md`](docs/LIMITATIONS.md) — Known limitations and caveats
+- [`PUBLISH.md`](docs/PUBLISH.md) — Publication and citation guide
 
-### Validation croisée (systèmes indépendants)
+---
 
-| Comparaison | Spatial | Temporel | Total |
-|-------------|---------|----------|-------|
-| V12 vs CT2022 | 0.999 | 0.958 | 0.979 |
-| **V12 vs CAMS** | **0.992** | **0.851** | **0.965** |
-| CT2022 vs CAMS | 0.988 | 0.841 | 0.983 |
-
-### Sur observations réelles ICOS (MC Dropout, 50 passes)
-
-- **α = 1.010 ± 0.078** (IC 95% : [0.853, 1.167]) — EDGAR correct en moyenne européenne
-- **β = 0.971 ± 0.023** (IC 95% : [0.926, 1.017]) — VPRM légèrement surestimé (~3%)
-
-## Installation
-
-```bash
-git clone https://github.com/YOUR_USERNAME/pinn-inversion-co2.git
-cd pinn-inversion-co2
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-## Données requises (externes)
-
-Ces données ne sont pas incluses dans le repo (taille, licences). Voir `docs/DATA.md` pour les instructions de téléchargement.
-
-- **ICOS CO₂** : [data.icos-cp.eu](https://data.icos-cp.eu) — 25 stations, 2019, niveau L1
-- **ERA5 BLH + T2m** : [CDS API](https://cds.climate.copernicus.eu)
-- **CarbonTracker CT2022** : [NOAA ESRL](https://gml.noaa.gov/ccgg/carbontracker/)
-- **CAMS flux** : [ADS API](https://ads.atmosphere.copernicus.eu)
-- **VPRM ECMWF 2019** : [ECMWF](https://confluence.ecmwf.int/)
-- **EDGAR v8.0** : [EDGAR JRC](https://edgar.jrc.ec.europa.eu/)
-
-## Structure du repo
+## 🏗️ Repository structure
 
 ```
 pinn-inversion-co2/
-├── README.md                    # Ce fichier
-├── LICENSE                      # MIT
-├── requirements.txt             # Dépendances Python
-├── CITATION.cff                 # Métadonnées citation
-├── .gitignore
-├── scripts/
-│   ├── v11_baseline.py          # V11 référence
-│   ├── v12b_filtered.py         # V12b (meilleur LOSO)
-│   ├── v13_corrector.py         # V13 correcteur statique
-│   ├── v13b_dynamic.py          # V13b correcteur dynamique
-│   ├── beta_fourier.py          # β Fourier (3 params)
-│   ├── mc_dropout.py            # Quantification incertitude
-│   ├── validation_cams.py       # Comparaison triple
-│   ├── validation_forward.py    # C_mod vs C_obs
-│   └── withholding_jja.py       # Test temporel
-├── results/                     # Fichiers .npz des résultats
-├── figures/                     # Figures finales
-└── docs/
-    ├── DATA.md                  # Instructions téléchargement
-    ├── METHODOLOGY.md           # Détails méthodologiques
-    └── LIMITATIONS.md           # Limites et perspectives
+├── docs/              # Reports (PDF + MD) and technical documentation
+├── figures/           # 21 PNG figures used in reports
+├── scripts/           # Python scripts for training, validation, ablation
+├── results/           # (empty - see Zenodo archive for trained models)
+├── references.bib     # 30 bibliographic references
+├── CITATION.cff       # Citation metadata
+├── LICENSE            # MIT
+├── README.md          # This file
+└── requirements.txt   # Python dependencies
 ```
 
-## Citation
+---
 
-Si tu utilises ce code :
+## 🚀 Quick start
+
+```bash
+# Clone
+git clone https://github.com/Mahamat-A/pinn-inversion-co2.git
+cd pinn-inversion-co2
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run V12b training (final configuration)
+python scripts/v12b_filtered.py
+
+# MC Dropout uncertainty quantification
+python scripts/mc_dropout.py
+
+# CAMS validation
+python scripts/validation_cams.py
+```
+
+See `docs/DATA.md` for downloading required input data (ICOS, ERA5, CT2022, CAMS, EDGAR).
+
+---
+
+## 📊 Key results
+
+### Configuration progression
+| Version | Innovation | LOSO r |
+|---------|-----------|--------|
+| V6 | Decoupled fossil/bio | 0.417 |
+| V11 | Weekly footprints | 0.487 |
+| **V12b** | **Urban filtering (final)** | **0.612 ± 0.015** |
+
+### Failed extensions (documented for transparency)
+- **V14** (additive γ, 481 params) → LOSO 0.489 — over-parameterized
+- **V15** (80 regions, 961 params) → LOSO 0.133 — catastrophic collapse
+- → Demonstrates the ~240-parameter ceiling at 19 stations × 52 weeks
+
+### Independent validation
+- vs CAMS spatial: **r = 0.992**
+- vs CT2022 spatial: r = 0.999
+- Forward C_mod vs C_obs: r = 0.422 (best stations > 0.70)
+
+---
+
+## ⚠️ Honest framing of limitations
+
+This work is presented with explicit acknowledgment of its limitations:
+
+1. **Structural, not physical separation** — The α/β decoupling exploits the distinct spatial structures of EDGAR (fossil) and VPRM (biosphere) priors. It is not a formal physical separation, which would require co-tracers like ¹⁴CO₂. If prior geographies are wrong, the system cannot detect it.
+
+2. **Urban station filtering** — 6 of 25 stations excluded because HYSPLIT at 50 km cannot resolve urban plumes. This is a standard limitation of regional inversion systems at comparable resolution.
+
+3. **MC Dropout uncertainty** — Reported intervals are lower bounds. Full Bayesian PINN would likely yield wider credible intervals (~±0.12 to ±0.15 instead of ±0.078).
+
+4. **Heatwave signal marginal** — The JJA β reduction is directionally consistent with heatwave-induced sink reduction but only at 1.4σ — not a formal detection. Multi-year analysis (2018, 2020) needed for robust attribution.
+
+See `docs/LIMITATIONS.md` and Section 8 of the long report for detailed discussion.
+
+---
+
+## 📖 Citation
 
 ```bibtex
-@software{mahamat_2026_pinn_co2,
+@software{mahamat2026pinn,
   author       = {Mahamat, Ali Ousmane},
-  title        = {{PINN Inversion CO₂: Europe 2019}},
+  title        = {{PINN Inversion CO₂: A physics-informed framework
+                   for European atmospheric CO₂ flux inversion}},
   year         = 2026,
   publisher    = {Zenodo},
+  version      = {v1.1.0},
   doi          = {10.5281/zenodo.19638205},
-  url          = {https://github.com/YOUR_USERNAME/pinn-inversion-co2}
+  url          = {https://github.com/Mahamat-A/pinn-inversion-co2}
 }
 ```
 
-## Limites connues
+---
 
-Voir `docs/LIMITATIONS.md` pour le détail. En résumé :
+## 🔄 Version history
 
-- **Une seule année** (2019) — multi-année nécessiterait recalcul HYSPLIT
-- **Transport 50 km** — HYSPLIT/ERA5 limite à ~25% du réseau (stations urbaines exclues)
-- **Mono-traceur** — séparation α/β repose sur la structure spatiale des priors ; le ¹⁴CO₂ résoudrait l'ambiguïté
-- **Max ~240 paramètres** — 19 stations contraignent ~240 params ; V14 (481) et V15 (961) s'effondrent
-- **Résolution α** — 20 régions (130 000 km²) limite l'utilité politique nationale
+- **v1.1.0** (2026-04) — Reports added (EN/FR long + short), figures, expanded scripts, reformulated abstracts with explicit caveats on structural decoupling, MC Dropout calibration, urban filtering, and heatwave signal marginality
+- **v1.0.1** (2026-04) — Initial Zenodo release with core scripts
+- **v1.0.0** (2026-04) — Initial commit
 
-## Auteur
+---
+
+## 👤 Author
 
 **Ali Ousmane Mahamat** (Moud) — Indépendant (ex-GSMA, CNRS / URCA)
 
-## Licence
+📧 mahamatmoud@gmail.com
 
-MIT — voir [LICENSE](LICENSE).
+---
+
+## 📜 License
+
+MIT — see [LICENSE](LICENSE).
+
+---
+
+## 🙏 Acknowledgments
+
+This work builds on my 2022 M2 thesis at GSMA, CNRS / Université de Reims Champagne-Ardenne. Thanks to ICOS, NOAA, ECMWF, JRC, and Copernicus for open data access.
